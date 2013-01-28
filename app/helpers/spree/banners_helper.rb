@@ -16,7 +16,11 @@ module Spree
 
         outer_tag = (style == 'list') ? :li : style.to_sym
         banners = raw(banner.map do |ban|
-          banner_image = image_tag(ban.attachment.url(:custom))
+          banner_image_url = ban.attachment.url(:custom)
+          if params[:protocol_relative] == true
+            banner_image_url = banner_image_url.gsub(/^https?:/, '')
+          end
+          banner_image = image_tag(banner_image_url)
           banner_outer = ban.url.present? ? link_to(banner_image, ban.url) : banner_image
           content_tag(outer_tag, banner_outer, :class => cl)
         end.join)
